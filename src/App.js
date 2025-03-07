@@ -11,17 +11,17 @@ import { getUserProfile } from "./State/AuthSlice";
 
 function App() {
   const user=true;
-  // // const dispatch=useDispatch();
-  // // const{task,auth}=useSelector(store=>store)
-  // // useEffect(()=>{
-  // //   dispatch(fetchTasks({}))
-  // //   dispatch(getUserProfile(auth.jwt || localStorage.getItem("jwt")));
-  // },[auth.jwt]);
+  const dispatch=useDispatch();
+  const{task,auth}=useSelector(store=>store)
+  useEffect(()=>{
+    dispatch(fetchTasks({}));
+    dispatch(getUserProfile(auth.jwt || localStorage.getItem("jwt")));
+  },[auth.jwt]);
 
 
   return (
     <ThemeProvider theme={darkTheme}>
-   {user? <div>
+   {auth.user? <div>
   <Navbar />
   <Home />
   </div>:<Auth />}

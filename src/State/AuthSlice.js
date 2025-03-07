@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, combineReducers } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { BASE_URL, api, setAuthHeader } from '../Api/api';
 
@@ -12,30 +12,33 @@ export const login = createAsyncThunk('auth/login', async (userData) => {
   } catch (error) {
     console.log("catch error  ",error)
     throw Error(error.response.data.error);
+
   }
 });
 
 export const register = createAsyncThunk('auth/register', async (userData) => {
   try {
     console.log("request is coming")
-    const response = await axios.post(`${BASE_URL}/auth/signup`, userData); 
-    console.log("response data "+response.data)
-    localStorage.setItem("jwt",response.data.jwt)
-    console.log("register success ",response.data)
-    return response.data;
+    const {data}= await axios.post(`${BASE_URL}/auth/signup`, userData); 
+    localStorage.setItem("jwt",data.jwt)
+    console.log("register success ",data)
+    return data;
   } catch (error) {
     console.log("catch error  ",error)
     throw Error(error.response.data.error);
+
   }
 });
 
 
 
-export const logout = createAsyncThunk('auth/logout', async () => {
+export const logout = createAsyncThunk('auth/logout', async (userData) => {
   try {
     localStorage.clear()
   } catch (error) {
+    console.log("catch error",error);
     throw Error(error.response.data.error);
+
   }
 });
 
@@ -43,13 +46,14 @@ export const getUserProfile = createAsyncThunk('auth/getUserProfile', async (jwt
   setAuthHeader(jwt,api)
   try {
       
-    const response = await api.get('/api/users/profile'); 
+    const {data} = await api.get(`/api/users/profile`); 
     
-    console.log("get profile success ",response.data)
-    return response.data;
+    console.log("get profile success ",data)
+    return data;
   } catch (error) {
     console.log("catch error  ",error)
     throw Error(error.response.data.error);
+
   }
 });
 
@@ -57,13 +61,14 @@ export const getUserList = createAsyncThunk('auth/getUserList', async (jwt) => {
   setAuthHeader(jwt,api)
   try {
       
-    const response = await api.get('/api/users'); 
+    const {data} = await api.get(`/api/users`); 
     
-    console.log("user list ",response.data)
-    return response.data;
+    console.log("user list success ",data)
+    return data;
   } catch (error) {
     console.log("catch error  ",error)
     throw Error(error.response.data.error);
+
   }
 });
 
@@ -86,7 +91,7 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
-        state.jwt = action.payload;
+        state.jwt = action.payload.jwt;
         state.loggedIn = true;
       })
       .addCase(login.rejected, (state, action) => {
@@ -102,43 +107,48 @@ const authSlice = createSlice({
         state.user = action.payload;
         state.loggedIn = true;
       })
-      .addCase(getUserList.fulfilled, (state, action) => {
-        state.loading = false;
-        state.users = action.payload;
-        
-      })
       .addCase(getUserProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
+      .addCase(getUserList.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = action.payload;
+        state.loggedIn=true;
+        
+      })
+      .addCase(getUserList.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      
       .addCase(register.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(register.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.jwt = action.payload.jwt;
         state.loggedIn = true;
       })
       .addCase(register.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
-      .addCase(logout.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
+      
       .addCase(logout.fulfilled, (state) => {
-        state.loading = false;
         state.user = null;
-        state.loggedIn = false;
+        state.jwt=null;
+        state.users=[];
+        state.error=null;
+        state.loggedIn=false;
       })
-      .addCase(logout.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
-      });
+     
   },
 });
 
-// export { login, register, logout };
 export default authSlice.reducer;

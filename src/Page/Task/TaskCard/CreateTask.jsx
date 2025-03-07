@@ -1,11 +1,12 @@
 import React,{ useState } from 'react';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { Autocomplete, Button, Grid, TextField } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { useDispatch } from 'react-redux';
+import { createTask } from '../../../State/TaskSlice';
 const style = {
   position: 'absolute',
   top: '50%',
@@ -13,7 +14,6 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 400,
   bgcolor: 'background.paper',
-  // border: '3px solid #000',
   outline:"none",
   boxShadow: 24,
   p:4,
@@ -21,6 +21,7 @@ const style = {
 const tags = ["Angular", "React", "html", "Spring Boot", "Node js", "Python","CSS", "Java","C++","AI & ML","Numpy","Pandas","Sql"];
 
 export default function CreateNewTaskForm({handleClose,open}) {
+  const dispatch=useDispatch();
     const [formData, setFormData] = useState({
         title: "",
         image: "",
@@ -78,6 +79,7 @@ export default function CreateNewTaskForm({handleClose,open}) {
         const { deadline } = formData;
         formData.deadline=formateDate(deadline)
         formData.tags = selectedTags
+        dispatch(createTask(formData))
         console.log("Form data:", formData, "deadline: ",formData.deadline);
         handleClose();
       };

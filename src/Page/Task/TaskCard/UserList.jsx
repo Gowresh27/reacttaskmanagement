@@ -1,8 +1,11 @@
 import React from 'react';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { Button, Divider, ListItem, ListItemText } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserList } from '../../../State/AuthSlice';
+import { assignedTaskToUser } from '../../../State/TaskSlice';
+import { useLocation } from 'react-router-dom';
 
 const style = {
   position: 'absolute',
@@ -17,7 +20,19 @@ const style = {
 };
 const tasks=[1,1,1,1]
 export default function UserList({handleClose,open}) {
+  const dispatch=useDispatch();
+  const {auth}=useSelector(store=>store);
+  const location=useLocation()
+  const queryParams=new URLSearchParams(location.search);
+  const taskId=queryParams.get("taskId");
 
+  React.useEffect((item)=>{
+    dispatch(getUserList(localStorage.getItem("jwt")))
+  },[])
+
+  const handleAssignedTask=(user)=>[
+    dispatch(assignedTaskToUser({userId:user.id,taskId:taskId}))
+  ]
   return (
     <div>
       <Modal
@@ -28,27 +43,22 @@ export default function UserList({handleClose,open}) {
       >
         <Box sx={style}>{
           
-        tasks.map((item,index)=>
+        auth.users.map((item,index)=>
           <>
           
         <div className="flex items-center justify-between w-full">
 
                 <div>
                   <ListItem>
-                    {/* <ListItemAvatar>
-                      <Avatar
-                        alt="Cindy Baker"
-                        src="https://cdn.leonardo.ai/users/f6c5ad77-7098-4040-bf46-6f9b62556804/generations/c60489f0-13ac-454d-8e17-2280222f205c/variations/alchemyrefiner_alchemymagic_1_c60489f0-13ac-454d-8e17-2280222f205c_0.jpg?w=512"
-                      />
-                    </ListItemAvatar> */}
+                   
                     <ListItemText
-                      primary={"jet task manage"}
-                      secondary="@jet_task_manage"
+                      primary={item.fullName}
+                      secondary={`@${item.fullName.split(" ").join("_").toLowerCase()}`}
                     />
                   </ListItem>
          </div>
          <div>
-          <Button className='customeButton'>select</Button>
+          <Button onClick={()=>handleAssignedTask(item)} className='customeButton'>select</Button>
           </div>
           </div>
           {index!==tasks.length-1 && <Divider variant="inset"  />}
@@ -61,3 +71,4 @@ export default function UserList({handleClose,open}) {
     </div>
   );
 }
+

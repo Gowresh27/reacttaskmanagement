@@ -22,14 +22,13 @@ code {
   border-radius:5px;
 }
 .techStack{
-  color:#c24dd0;
-    border: 2px solid #c24dd0;
+  color:#eef5f7;
+    border: 1.5px solid #c24dd0;
     padding: 0.5rem 2rem;
   
     /* Gradient */
     background-image: linear-gradient(135deg, #c24dd0, #7a72fa);
     background: transparent;
-    /* You can adjust the angle and add more color stops if needed */
   }
 
   .customeButton{

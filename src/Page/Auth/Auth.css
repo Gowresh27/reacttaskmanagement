@@ -5,17 +5,63 @@
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 60px;
+  border: 1px solid #1b0311;
+  /* background-color: rgb(54, 36, 24); */
+  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+  max-width: 600px;
+  margin: auto;
 
-.box {
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  width: 100%;
+}
+
+h2{
+  text-align: center;
+  color: #c24dd0;
+  font-size: 32px;
+  text-shadow: 0px 0px 40px rgba(255, 255, 255);
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #c24dd0;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #a020f0;
+}
+.error-text {
+  color: #b82f2f; /* Changed error text color to red */
+  font-size: 15px;
+}
+
+
+/* .box {
   position: relative;
   width: 100%;
   padding: 40px 30px;
   box-shadow: rgba(215, 106, 255, 0.507) 0px 0px 100px;
 
   perspective: 500px;
-  height: 80%;
+  height: 82%;
 
-  /* background-color: #1b013b !important; */
 }
 .box .cover {
   position: absolute;
@@ -27,7 +73,6 @@
   transition: all 1s ease;
   transform-origin: left;
   transform-style: preserve-3d;
-  /* box-shadow: rgba(215, 106, 255, 0.507) 0px 0px 100px; */
 }
 
 .box .rotate-active {
@@ -83,7 +128,7 @@
 }
 .cover .text .text-1,
 .cover .text .text-2 {
-  font-size: 26px;
+  font-size: 25px;
   font-weight: 600;
   color: #fff;
   text-align: center;
@@ -91,8 +136,8 @@
 }
 
 .cover .text .text-2 {
-  margin-top: 7px;
-  font-size: 16px;
+  margin-top: 6px;
+  font-size: 15px;
 }
 
 .box .form-content {
@@ -109,4 +154,4 @@
 .textStyle {
   color: #c24dd0;
   text-shadow: 0px 0px 40px rgba(255, 255, 255);
-}
+} */

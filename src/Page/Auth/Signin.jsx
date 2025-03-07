@@ -1,74 +1,71 @@
+
 import { Button, TextField } from '@mui/material';
-import React,{useState} from 'react'
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { login } from '../../State/AuthSlice';
+import { toast, ToastContainer } from 'react-toastify';
 
-const Signin = ({togglePanel}) => {
-  const dispatch=useDispatch()
+const Signin = () => {
+  const dispatch = useDispatch();
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({ email: "", password: "" });
 
-    const [formData, setFormData] = useState({
-        email: "",
-        password: "",
-      });
-      const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-      }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    let errorText = "";
+    if (name === "email") {
+      errorText = value === "" ? "Email is required" : !/\S+@\S+\.\S+/.test(value) ? "Please enter a valid email address" : "";
+    } else if (name === "password") {
+      errorText = value === "" ? "Password is required" : "";
+    }
+    setErrors({ ...errors, [name]: errorText });
+  };
 
-        const handleSubmit = (e) => {
-            e.preventDefault();
-            dispatch(login(formData))
-            console.log("Login Form Submitted ", formData);
-          };
-        
+  const validateForm = () => {
+    const newErrors = {
+      email: formData.email === "" ? "Email is required" : !/\S+@\S+\.\S+/.test(formData.email) ? "Please enter a valid email address" : "",
+      password: formData.password === "" ? "Password is required" : "",
+    };
+    setErrors(newErrors);
+    return !Object.values(newErrors).some(error => error !== "");
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      dispatch(login(formData));
+    } else {
+      console.log("Please fix the errors in the form");
+    }
+  };
+ 
+
   return (
-    <div className="">
-      <h1 className="text-lg font-bold text-center pb-8 textStyle">Login</h1>
-      <form className="space-y-3" onSubmit={handleSubmit}>
-        <TextField
-          fullWidth
-          label="Email"
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Enter your email"
-        />
+    <form onSubmit={handleSubmit}>
+      <h2>Login</h2>
+      <TextField 
+      label="Email" 
+      name="email"
+       value={formData.email} 
+       onChange={handleChange} 
+       error={!!errors.email} 
+       helperText={errors.email} />
 
-        <TextField
-          fullWidth
-          label="Password"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Enter your password"
-        />
+      <TextField
+       label="Password" 
+       name="password" 
+       type="password" 
+       value={formData.password} 
+       onChange={handleChange} 
+       error={!!errors.password}
+        helperText={errors.password} />
+      <Button type="submit">Login</Button>
+      <ToastContainer />
 
-        <div>
-          <Button
-            sx={{ padding: ".9rem" }}
-            className="customeButton"
-            // variant="contained"
-            // color="primary"
-            type="submit"
-            fullWidth
-          >
-            Login
-          </Button>
-        </div>
-      </form>
-      <div>
-      {/* <div className="textStyle mt-5 flex items-center gap-2 py-5 justify-center"> */}
-        <span>Don't have an account?</span>
-        <Button onClick={togglePanel}>
-          signup
-        </Button>
-      </div>
-      </div>
+    </form>
+  );
+};
 
-  )
-
-}
 
 export default Signin
